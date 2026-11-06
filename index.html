@@ -1,0 +1,680 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<meta name="theme-color" content="#0f0f0f">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Kids Video">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" href="icon-192.png">
+<title>Kids Video</title>
+<style>
+:root{--bg:#0f0f0f;--s1:#1c1c1e;--s2:#2a2a2d;--accent:#e62117;--muted:#aaa;--green:#2ecc71;--blue:#2f6bff;--purple:#8b3dff;--orange:#ffa726;
+--top:env(safe-area-inset-top,0px);--bot:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;background:var(--bg);color:#fff;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;overscroll-behavior:none}
+button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
+input[type=text],input[type=search],input[type=password]{font:inherit;color:#fff;background:var(--s1);border:1px solid #444;border-radius:12px;padding:12px 14px;width:100%;outline:none}
+input:focus{border-color:#888}
+#shell{position:fixed;inset:0;display:flex;flex-direction:column}
+#main{flex:1;overflow-y:auto;overflow-x:hidden;padding-top:var(--top);-webkit-overflow-scrolling:touch}
+nav{display:flex;background:var(--bg);border-top:1px solid #222;padding-bottom:var(--bot)}
+nav button{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 0 6px;font-size:12px;font-weight:600;opacity:.65}
+nav button.on{opacity:1}
+nav svg{width:26px;height:26px}
+.top{display:flex;align-items:center;justify-content:space-between;padding:10px 16px}
+.logo{display:flex;align-items:center;gap:8px;font-size:24px;font-weight:800;font-style:italic}
+.logo b{color:var(--accent)}
+.logo i{display:inline-flex;width:40px;height:28px;background:var(--accent);border-radius:8px;align-items:center;justify-content:center}
+.logo i svg{width:18px;height:18px;fill:#fff}
+.iconbtn{width:44px;height:44px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center}
+.iconbtn svg{width:26px;height:26px;fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:6px 12px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;padding:9px 16px;border-radius:20px;background:var(--s2);font-size:14px;font-weight:600;white-space:nowrap}
+.chip.on{background:#fff;color:#000}
+.search{padding:4px 12px 8px;display:flex;gap:8px}
+.list{padding:12px;display:flex;flex-direction:column;gap:20px}
+.card{display:block;width:100%;text-align:left}
+.thumb{position:relative;width:100%;aspect-ratio:16/9;border-radius:16px;overflow:hidden;background:var(--s2)}
+.thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.dur{position:absolute;right:8px;bottom:8px;background:rgba(0,0,0,.8);font-size:12px;font-weight:700;padding:2px 6px;border-radius:6px}
+.meta{display:flex;gap:12px;padding:10px 4px 0}
+.avatar{flex:none;width:40px;height:40px;border-radius:50%;background:var(--s2);display:flex;align-items:center;justify-content:center;font-weight:700}
+.title{font-size:16px;font-weight:600;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.sub{font-size:13px;color:var(--muted);margin-top:2px}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;padding:12px}
+@media(min-width:700px){.grid{grid-template-columns:repeat(4,1fr)}.list{max-width:720px;margin:0 auto}}
+.stile{position:relative;aspect-ratio:9/16;border-radius:16px;overflow:hidden;background:var(--s2);width:100%}
+.stile img{width:100%;height:100%;object-fit:cover}
+.stile span{position:absolute;left:0;right:0;bottom:0;padding:24px 8px 8px;font-size:12px;background:linear-gradient(transparent,rgba(0,0,0,.8));display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.stile .play{position:absolute;top:50%;left:50%;width:44px;height:44px;margin:-22px;fill:#fff;opacity:.9}
+.seg{display:flex;gap:10px;padding:4px 12px}
+.seg button{flex:1;padding:10px;border-radius:24px;background:var(--s2);font-weight:600}
+.seg button.on{background:#fff;color:#000}
+.empty{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:64px 32px;gap:8px;color:var(--muted)}
+.empty h3{color:#fff;margin:0;font-size:20px}
+.card2{background:var(--s1);border-radius:20px;padding:16px;margin:0 16px 16px;display:flex;flex-direction:column;gap:12px}
+.card2 h2{margin:0;font-size:18px}
+.row{display:flex;align-items:center;gap:12px}
+.row .grow{flex:1;min-width:0}
+.rthumb{flex:none;width:80px;height:56px;border-radius:10px;overflow:hidden;background:var(--s2)}
+.rthumb img{width:100%;height:100%;object-fit:cover}
+.rtitle{font-size:14px;font-weight:600;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.tiles{display:flex;gap:12px}
+.tile{flex:1;height:100px;border-radius:18px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;font-weight:700;font-size:17px;color:#fff}
+.tile svg{width:30px;height:30px;fill:#fff}
+.sq{flex:none;width:40px;height:40px;border-radius:10px;display:inline-flex;align-items:center;justify-content:center;font-size:20px;font-weight:800;color:#fff}
+.btn{padding:12px 16px;border-radius:12px;font-weight:700;background:var(--s2)}
+.btn.g{background:var(--green);color:#000}.btn.b{background:var(--blue)}.btn.r{background:var(--accent)}
+.btn[disabled]{opacity:.4}
+.link{color:#6ea8ff;font-weight:600;padding:8px}
+.navrow{display:flex;align-items:center;gap:14px;width:100%;padding:12px 0;font-size:16px;text-align:left}
+.navrow span{flex:1}.navrow em{color:var(--muted);font-style:normal}
+.subtop{display:flex;align-items:center;gap:4px;padding:6px 8px}
+.subtop h1{font-size:20px;margin:0}
+.status{font-size:13px;color:var(--muted);min-height:18px}.status.err{color:#ff6b61}
+.badge{font-size:12px;font-weight:700}
+.pinwrap{display:flex;flex-direction:column;align-items:center;padding:48px 24px 24px;gap:8px}
+.dots{display:flex;gap:16px;margin:16px 0 4px}.dots i{width:18px;height:18px;border-radius:50%;background:var(--s2)}.dots i.on{background:#fff}
+.pad{display:grid;grid-template-columns:repeat(3,72px);gap:14px;margin-top:8px}
+.pad button{height:72px;border-radius:50%;background:var(--s1);font-size:26px;font-weight:500}
+.pad button.x{background:none}
+#modal .scrim{position:fixed;inset:0;background:rgba(0,0,0,.7);display:flex;align-items:flex-end;justify-content:center;z-index:50;padding:0}
+#modal .sheet{background:#232326;width:100%;max-width:520px;border-radius:24px 24px 0 0;padding:20px 20px calc(20px + var(--bot));display:flex;flex-direction:column;gap:12px;max-height:90vh;overflow:auto}
+@media(min-width:700px){#modal .scrim{align-items:center}#modal .sheet{border-radius:24px}}
+.sheet h2{margin:0}.sheet .acts{display:flex;gap:10px;justify-content:flex-end}
+#overlay{position:fixed;inset:0;z-index:40;background:#000;display:none;flex-direction:column}
+#overlay.show{display:flex}
+#overlay .bar{display:flex;align-items:center;gap:4px;padding:calc(6px + var(--top)) 8px 6px;background:var(--bg);z-index:3}
+.vwrap{position:relative;width:100%;aspect-ratio:16/9;background:#000}
+.vwrap iframe,.vwrap>div{position:absolute;inset:0;width:100%;height:100%}
+.pager{flex:1;overflow-y:scroll;scroll-snap-type:y mandatory;overscroll-behavior:contain}
+.page{position:relative;height:100%;scroll-snap-align:start;scroll-snap-stop:always;background:#000;display:flex;align-items:center;justify-content:center}
+.page img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.5}
+.page .slot{position:relative;height:100%;aspect-ratio:9/16;max-width:100%;background:#000}
+.page .slot>div,.page .slot iframe{position:absolute;inset:0;width:100%;height:100%}
+.page .tap{position:absolute;inset:0;z-index:2}
+.page .cap{position:absolute;left:0;right:0;bottom:0;z-index:3;padding:40px 16px calc(16px + var(--bot));background:linear-gradient(transparent,rgba(0,0,0,.75));font-weight:600;pointer-events:none}
+.sback{position:absolute;top:calc(6px + var(--top));left:6px;z-index:5;background:rgba(0,0,0,.5)}
+#toast{position:fixed;left:50%;bottom:calc(90px + var(--bot));transform:translateX(-50%);background:#fff;color:#000;padding:10px 16px;border-radius:20px;font-weight:600;font-size:14px;z-index:99;max-width:90%;text-align:center;display:none}
+.note{font-size:13px;color:var(--muted);line-height:1.4}
+</style>
+</head>
+<body>
+<div id="shell">
+  <div id="main"></div>
+  <nav id="nav"></nav>
+</div>
+<div id="overlay"></div>
+<div id="modal"></div>
+<div id="toast"></div>
+<input id="filepick" type="file" accept=".json,application/json" hidden>
+
+<script>
+'use strict';
+/* ======================================================================
+   Kids Video — parent-controlled catalogue. Everything is stored in this
+   browser (localStorage). No accounts, no servers, no analytics, no ads.
+   ====================================================================== */
+
+// ---------- small helpers ----------
+const $ = (s, r = document) => r.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+class AppError extends Error {}
+class NeedTitle extends Error {}
+const ID_RE = /^[A-Za-z0-9_-]{11}$/;
+const CH_RE = /^UC[A-Za-z0-9_-]{22}$/;
+const thumbUrl = id => `https://i.ytimg.com/vi/${id}/hqdefault.jpg`;
+const fmtDur = s => { if (!s) return ''; const h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60), x = s % 60; return h ? `${h}:${String(m).padStart(2, '0')}:${String(x).padStart(2, '0')}` : `${m}:${String(x).padStart(2, '0')}`; };
+const ICON = {
+  home: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3 2 12h3v8h5v-6h4v6h5v-8h3z"/></svg>',
+  shorts: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="3" width="16" height="18" rx="3"/><path d="M4 9h16M9 3l-2 6M15 3l-2 6"/></svg>',
+  upload: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg>',
+  search: '<svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>',
+  back: '<svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg>',
+  close: '<svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg>',
+  lock: '<svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0"/></svg>',
+  play: '<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>',
+  trash: '<svg viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></svg>',
+  refresh: '<svg viewBox="0 0 24 24"><path d="M20 5v5h-5M4 19v-5h5M19 10A8 8 0 0 0 5 8M5 14a8 8 0 0 0 14 2"/></svg>',
+};
+
+// ---------- storage ----------
+const KEY = 'kidsvideo.v1';
+let S;
+function load() {
+  try { const j = JSON.parse(localStorage.getItem(KEY)); if (j && Array.isArray(j.content)) return j; } catch (e) {}
+  return null;
+}
+S = load() || { channels: [], content: [], nextId: 1, apiKey: '', pin: null, selChannel: null };
+let storageOk = true;
+function save() {
+  try { localStorage.setItem(KEY, JSON.stringify(S)); storageOk = true; }
+  catch (e) { storageOk = false; toast('Could not save. Browser storage may be full or blocked.'); }
+}
+
+// ---------- URL parsing ----------
+function parseLink(raw) {
+  let s = String(raw || '').trim();
+  if (!s) return { t: 'unknown' };
+  if (!/^https?:\/\//i.test(s)) s = 'https://' + s;
+  let u; try { u = new URL(s); } catch (e) { return { t: 'unknown' }; }
+  const host = u.hostname.toLowerCase().replace(/^(www|m)\./, '');
+  const seg = u.pathname.split('/').filter(Boolean);
+  if (host === 'youtu.be') return ID_RE.test(seg[0] || '') ? { t: 'video', id: seg[0] } : { t: 'unknown' };
+  if (host !== 'youtube.com' && host !== 'youtube-nocookie.com') return { t: 'unknown' };
+  const a = seg[0] || '', b = seg[1] || '';
+  if (a === 'watch') { const v = u.searchParams.get('v') || ''; return ID_RE.test(v) ? { t: 'video', id: v } : { t: 'unknown' }; }
+  if (a === 'shorts') return ID_RE.test(b) ? { t: 'short', id: b } : { t: 'unknown' };
+  if (['embed', 'live', 'v'].includes(a)) return ID_RE.test(b) ? { t: 'video', id: b } : { t: 'unknown' };
+  if (a === 'channel') return CH_RE.test(b) ? { t: 'channel', id: b } : { t: 'unknown' };
+  if (a.startsWith('@') && a.length > 1) return { t: 'handle', name: decodeURIComponent(a.slice(1)) };
+  if (a === 'user' && b) return { t: 'user', name: decodeURIComponent(b) };
+  if (a === 'c' && b) return { t: 'custom', name: b };
+  return { t: 'unknown' };
+}
+
+// ---------- YouTube (documented endpoints only) ----------
+async function api(path, params) {
+  if (!S.apiKey) throw new AppError('This needs a YouTube API key. Add one in Settings (see the guide).');
+  const u = new URL('https://www.googleapis.com/youtube/v3/' + path);
+  for (const [k, v] of Object.entries(params)) u.searchParams.set(k, v);
+  u.searchParams.set('key', S.apiKey);
+  let r;
+  try { r = await fetch(u); } catch (e) { throw new AppError('Network problem. Check the internet connection and try again.'); }
+  if (!r.ok) throw new AppError(r.status === 400 || r.status === 403 ? 'YouTube refused the request. Check the API key and its daily quota.' : r.status === 404 ? 'Not found on YouTube.' : `YouTube returned an error (${r.status}).`);
+  return r.json();
+}
+function isoDur(iso) {
+  const m = /^P(?:\d+D)?T?(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?$/.exec(iso || ''); if (!m) return null;
+  const t = (+m[1] || 0) * 3600 + (+m[2] || 0) * 60 + (+m[3] || 0); return t > 0 ? t : null;
+}
+async function videoDetails(ids) {
+  const out = {};
+  for (let i = 0; i < ids.length; i += 50) {
+    const j = await api('videos', { part: 'snippet,contentDetails,status', id: ids.slice(i, i + 50).join(',') });
+    for (const it of j.items || []) {
+      if (it.status && it.status.embeddable === false) continue; // owner blocks playback outside YouTube
+      if (it.status && it.status.privacyStatus === 'private') continue;
+      const sn = it.snippet || {};
+      out[it.id] = { id: it.id, title: sn.title || 'Untitled video', channelName: sn.channelTitle || null, channelId: sn.channelId || null,
+        durationSec: isoDur(it.contentDetails && it.contentDetails.duration), publishedAt: Date.parse(sn.publishedAt) || null };
+    }
+  }
+  return out;
+}
+async function oembedMeta(id) {
+  // Browsers may block this (no CORS); callers fall back to asking the parent for a title.
+  const r = await fetch('https://www.youtube.com/oembed?format=json&url=' + encodeURIComponent('https://www.youtube.com/watch?v=' + id));
+  if (!r.ok) throw new Error('oembed ' + r.status);
+  const j = await r.json();
+  return { id, title: j.title || 'Untitled video', channelName: j.author_name || null, channelId: null, durationSec: null, publishedAt: null };
+}
+async function resolveChannel(link) {
+  let q;
+  if (link.t === 'channel') q = { id: link.id };
+  else if (link.t === 'handle') q = { forHandle: '@' + link.name };
+  else if (link.t === 'user') q = { forUsername: link.name };
+  else if (link.t === 'custom') throw new AppError('Custom /c/ links can’t be resolved. Open the channel in YouTube and copy its @handle link instead.');
+  else throw new AppError('That doesn’t look like a YouTube channel link.');
+  const j = await api('channels', { part: 'snippet', ...q });
+  const it = (j.items || [])[0]; if (!it) throw new AppError('No channel found for that link.');
+  const th = it.snippet.thumbnails || {};
+  return { channelId: it.id, name: it.snippet.title, handle: it.snippet.customUrl || null, thumbnailUrl: (th.medium || th.default || {}).url || null };
+}
+async function latestVideos(info) {
+  const uploads = 'UU' + info.channelId.slice(2);
+  const j = await api('playlistItems', { part: 'contentDetails', maxResults: 50, playlistId: uploads });
+  const ids = (j.items || []).map(i => i.contentDetails && i.contentDetails.videoId).filter(x => x && ID_RE.test(x));
+  const d = await videoDetails(ids);
+  return ids.filter(i => d[i]).map(i => ({ ...d[i], channelName: info.name, channelId: info.channelId }));
+}
+
+// ---------- catalogue operations ----------
+const now = () => Date.now();
+function newRow(o) { return { id: S.nextId++, youtubeId: o.id, kind: o.kind, origin: o.origin, title: String(o.title || 'Untitled').slice(0, 300),
+  channelName: o.channelName ? String(o.channelName).slice(0, 200) : null, sourceChannelId: o.sourceChannelId || null,
+  durationSec: o.durationSec || null, status: 'PENDING', dateAdded: now(), publishedAt: o.publishedAt || null }; }
+
+async function addSingle(id, kind, manualTitle) {
+  const ex = S.content.find(c => c.youtubeId === id);
+  if (ex && ex.status !== 'REJECTED') throw new AppError(`Already in your catalogue (${ex.kind === 'SHORT' ? 'Shorts' : 'Videos'}, ${ex.status.toLowerCase()}).`);
+  let meta;
+  if (S.apiKey) {
+    meta = (await videoDetails([id]))[id];
+    if (!meta) throw new AppError('That video is unavailable, private, removed, or can’t be played outside YouTube.');
+  } else {
+    try { meta = await oembedMeta(id); }
+    catch (e) { if (manualTitle) meta = { id, title: manualTitle, channelName: null }; else throw new NeedTitle(); }
+  }
+  if (ex) S.content = S.content.filter(c => c.id !== ex.id);
+  S.content.push(newRow({ ...meta, id, kind, origin: 'INDIVIDUAL' }));
+  save();
+}
+function addChannelVideos(info, vids) {
+  let n = 0;
+  for (const v of vids) {
+    if (S.content.some(c => c.youtubeId === v.id)) continue; // unique per video id, never auto-approved
+    S.content.push(newRow({ ...v, kind: 'VIDEO', origin: 'CHANNEL', channelName: info.name, sourceChannelId: info.channelId })); n++;
+  }
+  return n;
+}
+async function importChannel(info) {
+  const vids = await latestVideos(info);
+  S.channels.push({ channelId: info.channelId, name: info.name, handle: info.handle, thumbnailUrl: info.thumbnailUrl, dateAdded: now(), lastRefreshed: now() });
+  const n = addChannelVideos(info, vids); save(); return n;
+}
+async function refreshChannel(channelId) {
+  const ch = S.channels.find(c => c.channelId === channelId); if (!ch) throw new AppError('Channel not found.');
+  const n = addChannelVideos(ch, await latestVideos(ch)); ch.lastRefreshed = now(); save(); return n;
+}
+function deleteChannel(channelId) {
+  S.channels = S.channels.filter(c => c.channelId !== channelId);
+  S.content = S.content.filter(c => !(c.origin === 'CHANNEL' && c.sourceChannelId === channelId));
+  if (S.selChannel === channelId) S.selChannel = null;
+  save();
+}
+const setStatus = (ids, st) => { const set = new Set(ids); S.content.forEach(c => { if (set.has(c.id)) c.status = st; }); save(); };
+function removeItems(ids) { // channel videos stay as REJECTED so a refresh can't resurrect them
+  const set = new Set(ids);
+  S.content = S.content.filter(c => !(set.has(c.id) && c.origin !== 'CHANNEL'));
+  S.content.forEach(c => { if (set.has(c.id) && c.origin === 'CHANNEL') c.status = 'REJECTED'; });
+  save();
+}
+// Child-facing selectors: approved only, one kind each.
+const approvedVideos = () => S.content.filter(c => c.kind === 'VIDEO' && c.status === 'APPROVED').sort((a, b) => (b.publishedAt || b.dateAdded) - (a.publishedAt || a.dateAdded));
+const approvedShorts = () => S.content.filter(c => c.kind === 'SHORT' && c.status === 'APPROVED').sort((a, b) => b.dateAdded - a.dateAdded);
+
+// ---------- backup ----------
+function exportJson() {
+  return JSON.stringify({ app: 'KidsVideo', format: 1, exportedAt: now(),
+    channels: S.channels.map(({ channelId, name, handle, thumbnailUrl, dateAdded }) => ({ channelId, name, handle, thumbnailUrl, dateAdded })),
+    content: S.content.map(({ youtubeId, kind, origin, title, channelName, sourceChannelId, durationSec, status, dateAdded, publishedAt }) => ({ youtubeId, kind, origin, title, channelName, sourceChannelId, durationSec, status, dateAdded, publishedAt })) }, null, 2);
+}
+function importJson(text) {
+  let root; try { root = JSON.parse(text); } catch (e) { throw new AppError('That file isn’t a valid backup.'); }
+  if (!root || root.app !== 'KidsVideo' || root.format !== 1) throw new AppError('That file isn’t a Kids Video backup.');
+  const r = { videos: 0, shorts: 0, channels: 0, skipped: 0 };
+  for (const c of Array.isArray(root.channels) ? root.channels : []) {
+    if (!c || !CH_RE.test(c.channelId) || !c.name) { r.skipped++; continue; }
+    if (S.channels.some(x => x.channelId === c.channelId)) continue;
+    S.channels.push({ channelId: c.channelId, name: String(c.name).slice(0, 200), handle: c.handle ? String(c.handle) : null, thumbnailUrl: null, dateAdded: now(), lastRefreshed: now() }); r.channels++;
+  }
+  for (const c of Array.isArray(root.content) ? root.content : []) {
+    if (!c || !ID_RE.test(c.youtubeId) || !['VIDEO', 'SHORT'].includes(c.kind) || !c.title) { r.skipped++; continue; }
+    if (S.content.some(x => x.youtubeId === c.youtubeId)) { r.skipped++; continue; }
+    const fromCh = c.kind === 'VIDEO' && c.origin === 'CHANNEL' && S.channels.some(x => x.channelId === c.sourceChannelId);
+    S.content.push(newRow({ id: c.youtubeId, kind: c.kind, origin: fromCh ? 'CHANNEL' : 'INDIVIDUAL', title: c.title, channelName: c.channelName,
+      sourceChannelId: fromCh ? c.sourceChannelId : null, durationSec: Number.isFinite(c.durationSec) ? c.durationSec : null, publishedAt: Number.isFinite(c.publishedAt) ? c.publishedAt : null }));
+    c.kind === 'SHORT' ? r.shorts++ : r.videos++; // newRow always starts PENDING: re-approve after import
+  }
+  save(); return r;
+}
+
+// ---------- PIN (salted PBKDF2, attempt limiting) ----------
+const b64 = buf => btoa(String.fromCharCode(...new Uint8Array(buf)));
+const unb64 = s => Uint8Array.from(atob(s), c => c.charCodeAt(0));
+async function pbkdf2(pin, salt) {
+  if (!(window.crypto && crypto.subtle)) throw new AppError('Secure storage needs https. Open the app from its https address.');
+  const key = await crypto.subtle.importKey('raw', new TextEncoder().encode(pin), 'PBKDF2', false, ['deriveBits']);
+  return crypto.subtle.deriveBits({ name: 'PBKDF2', hash: 'SHA-256', salt, iterations: 100000 }, key, 256);
+}
+async function makePin(pin) {
+  const salt = crypto.getRandomValues(new Uint8Array(16));
+  return { salt: b64(salt), hash: b64(await pbkdf2(pin, salt)), fails: 0, lockUntil: 0 };
+}
+async function verifyPin(pin) {
+  const p = S.pin, t = now();
+  if (t < p.lockUntil) return { s: 'locked', secs: Math.ceil((p.lockUntil - t) / 1000) };
+  const h = b64(await pbkdf2(pin, unb64(p.salt)));
+  if (h === p.hash) { p.fails = 0; p.lockUntil = 0; save(); return { s: 'ok' }; }
+  p.fails++;
+  if (p.fails >= 5) { const secs = Math.min(30 * 2 ** Math.min(p.fails - 5, 6), 3600); p.lockUntil = t + secs * 1000; save(); return { s: 'locked', secs }; }
+  save(); return { s: 'wrong', left: 5 - p.fails };
+}
+
+// ---------- UI state ----------
+const V = { tab: 'videos', searching: false, q: '', dash: 'home', pf: 'ALL', sel: new Set(), mq: '', ms: 'ALL', mt: 'ALL', expanded: null, unlocked: false, pin: '', pinMsg: '', refreshing: new Set(), busy: false };
+const lock = () => { V.unlocked = false; V.dash = 'home'; V.pin = ''; V.pinMsg = ''; V.sel.clear(); };
+
+function toast(msg) {
+  const t = $('#toast'); t.textContent = msg; t.style.display = 'block';
+  clearTimeout(toast.t); toast.t = setTimeout(() => t.style.display = 'none', 3500);
+}
+function modal(html) { $('#modal').innerHTML = `<div class="scrim"><div class="sheet">${html}</div></div>`; const i = $('#modal input'); if (i) setTimeout(() => i.focus(), 50); }
+const closeModal = () => { $('#modal').innerHTML = ''; };
+function mstatus(msg, err) { const s = $('#mstatus'); if (s) { s.textContent = msg || ''; s.className = 'status' + (err ? ' err' : ''); } }
+function mbusy(b, msg) { document.querySelectorAll('#modal button[data-busy]').forEach(x => x.disabled = b); mstatus(b ? msg : ''); }
+
+// ---------- views ----------
+function render() {
+  const a = document.activeElement, keep = a && a.id && $('#main').contains(a) ? { id: a.id, pos: a.selectionStart } : null;
+  const scroll = $('#main').scrollTop;
+  const main = $('#main');
+  main.innerHTML = V.tab === 'videos' ? vVideos() : V.tab === 'shorts' ? vShorts() : vUpload();
+  main.scrollTop = scroll;
+  if (keep) { const e = document.getElementById(keep.id); if (e) { e.focus(); try { e.setSelectionRange(keep.pos, keep.pos); } catch (x) {} } }
+  $('#nav').innerHTML = [['videos', 'Videos', ICON.home], ['shorts', 'Shorts', ICON.shorts], ['upload', 'Upload', ICON.upload]]
+    .map(([k, l, i]) => `<button data-act="tab" data-t="${k}" class="${V.tab === k ? 'on' : ''}">${i}${l}</button>`).join('');
+}
+const logo = () => `<div class="logo"><i>${ICON.play}</i><span>Kids <b>Video</b></span></div>`;
+const matches = (c, q) => !q || c.title.toLowerCase().includes(q.toLowerCase()) || (c.channelName || '').toLowerCase().includes(q.toLowerCase());
+const empty = (t, m) => `<div class="empty"><h3>${esc(t)}</h3><div>${esc(m)}</div></div>`;
+const topbar = () => `<div class="top">${logo()}${V.searching ? '' : `<button class="iconbtn" data-act="search" aria-label="Search">${ICON.search}</button>`}</div>` +
+  (V.searching ? `<div class="search"><input id="q" type="search" placeholder="Search approved videos" value="${esc(V.q)}" autocomplete="off"><button class="iconbtn" data-act="closesearch" aria-label="Close search">${ICON.close}</button></div>` : '');
+
+function vVideos() {
+  const vids = approvedVideos();
+  const active = S.selChannel && S.channels.some(c => c.channelId === S.selChannel) ? S.selChannel : null;
+  const shown = vids.filter(c => (!active || c.sourceChannelId === active) && matches(c, V.q));
+  const chips = `<div class="chips"><button class="chip ${!active ? 'on' : ''}" data-act="chan" data-c="">All</button>` +
+    [...S.channels].sort((a, b) => a.name.localeCompare(b.name)).map(c => `<button class="chip ${active === c.channelId ? 'on' : ''}" data-act="chan" data-c="${esc(c.channelId)}">${esc(c.name)}</button>`).join('') + '</div>';
+  let body;
+  if (!shown.length) body = V.q ? empty('No matches', `Nothing approved matches “${V.q}”.`) : !vids.length ? empty('No videos yet', 'A parent can add and approve videos from the Upload tab.') : empty('No approved videos here', 'A parent can approve videos for this channel from the Upload tab.');
+  else body = '<div class="list">' + shown.map(c => `<button class="card" data-act="play" data-i="${c.id}"><div class="thumb"><img loading="lazy" alt="" src="${thumbUrl(c.youtubeId)}">${c.durationSec ? `<span class="dur">${fmtDur(c.durationSec)}</span>` : ''}</div>
+      <div class="meta"><div class="avatar">${esc((c.channelName || '?')[0].toUpperCase())}</div><div><div class="title">${esc(c.title)}</div>${c.channelName ? `<div class="sub">${esc(c.channelName)}</div>` : ''}</div></div></button>`).join('') + '</div>';
+  return topbar() + chips + body;
+}
+function vShorts() {
+  const sh = approvedShorts().filter(c => matches(c, V.q));
+  const body = !sh.length ? (V.q ? empty('No matches', `Nothing approved matches “${V.q}”.`) : empty('No Shorts yet', 'A parent can add and approve Shorts from the Upload tab.'))
+    : '<div class="grid">' + sh.map(c => `<button class="stile" data-act="short" data-i="${c.id}"><img loading="lazy" alt="" src="${thumbUrl(c.youtubeId)}"><svg class="play" viewBox="0 0 24 24">${'<path d="M8 5v14l11-7z"/>'}</svg><span>${esc(c.title)}</span></button>`).join('') + '</div>';
+  return topbar() + `<div class="seg"><button data-act="tab" data-t="videos">Videos</button><button class="on">Shorts</button></div>` + body;
+}
+function vUpload() {
+  if (!V.unlocked) return vPin();
+  return { home: dHome, pending: dPending, channels: dChannels, videos: dVideos, settings: dSettings }[V.dash]();
+}
+function vPin() {
+  const keys = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '', '0', '<'];
+  return `<div class="pinwrap"><div style="color:var(--accent);width:56px;height:56px" class="iconbtn"><svg viewBox="0 0 24 24" style="width:56px;height:56px;fill:none;stroke:currentColor;stroke-width:1.8">${ICON.lock.replace(/<\/?svg[^>]*>/g, '')}</svg></div>
+    <h1 style="margin:4px 0;font-size:24px">Parents only</h1><div class="sub">Enter your 4-digit PIN</div>
+    <div class="dots">${[0, 1, 2, 3].map(i => `<i class="${i < V.pin.length ? 'on' : ''}"></i>`).join('')}</div>
+    <div class="status err" style="min-height:22px;text-align:center">${esc(V.pinMsg)}</div>
+    <div class="pad">${keys.map(k => k === '' ? '<button class="x" disabled></button>' : `<button data-act="pin" data-k="${k}" ${k === '<' ? 'aria-label="Delete"' : ''}>${k === '<' ? '⌫' : k}</button>`).join('')}</div></div>`;
+}
+const typeLabel = c => c.kind === 'SHORT' ? 'Short' : c.origin === 'CHANNEL' ? 'Channel video' : 'Individual video';
+const rowThumb = c => `<div class="rthumb"><img loading="lazy" alt="" src="${thumbUrl(c.youtubeId)}"></div>`;
+const rowInfo = (c, extra = '') => `<div class="grow"><div class="rtitle">${esc(c.title)}</div><div class="sub">${esc(typeLabel(c))}${c.channelName ? ' · ' + esc(c.channelName) : ''}</div>${extra}</div>`;
+const sqBtns = c => `<button class="sq" style="background:var(--green)" data-act="approve" data-i="${c.id}" aria-label="Approve">✓</button><button class="sq" style="background:var(--accent)" data-act="reject" data-i="${c.id}" aria-label="Reject">✕</button>`;
+const subtop = t => `<div class="subtop"><button class="iconbtn" data-act="dback" aria-label="Back">${ICON.back}</button><h1>${esc(t)}</h1></div>`;
+
+function dHome() {
+  const pend = S.content.filter(c => c.status === 'PENDING');
+  return `<div class="top"><div class="row"><span style="font-size:22px;font-weight:700">Parent Dashboard</span></div><button class="iconbtn" data-act="lockdash" aria-label="Lock dashboard">${ICON.lock}</button></div>
+  <div class="card2"><h2>Add Content</h2>
+    <div class="tiles"><button class="tile" style="background:var(--blue)" data-act="addlink" data-k="VIDEO"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>Add Video</button>
+    <button class="tile" style="background:var(--purple)" data-act="addlink" data-k="SHORT"><svg viewBox="0 0 24 24"><path d="M4 4h16v16H4zM4 9h16" fill="none" stroke="#fff" stroke-width="2"/></svg>Add Short</button></div>
+    <button class="tile" style="background:var(--accent);flex:none;height:64px;flex-direction:row;width:100%" data-act="addchan">Add Channel</button></div>
+  <div class="card2"><div class="row"><h2 class="grow">Pending Approval (${pend.length})</h2><button class="link" data-act="dgo" data-d="pending">View All ›</button></div>
+    ${pend.length ? pend.slice(0, 3).map(c => `<div class="row">${rowThumb(c)}${rowInfo(c)}${sqBtns(c)}</div>`).join('') : '<div class="sub">Nothing is waiting for approval.</div>'}</div>
+  <div class="card2">
+    <button class="navrow" data-act="dgo" data-d="channels"><span>Channels (${S.channels.length})</span><em>›</em></button>
+    <button class="navrow" data-act="dgo" data-d="videos"><span>Video Management</span><em>›</em></button>
+    <button class="navrow" data-act="dgo" data-d="settings"><span>App Settings</span><em>›</em></button></div>`;
+}
+function pendingFiltered() {
+  const p = S.content.filter(c => c.status === 'PENDING');
+  return { all: p, ind: p.filter(c => c.kind === 'VIDEO' && c.origin === 'INDIVIDUAL'), ch: p.filter(c => c.origin === 'CHANNEL'), sh: p.filter(c => c.kind === 'SHORT') };
+}
+function dPending() {
+  const P = pendingFiltered();
+  const shown = { ALL: P.all, VIDEOS: P.ind, CHANNEL: P.ch, SHORTS: P.sh }[V.pf];
+  const sel = shown.filter(c => V.sel.has(c.id));
+  const chip = (k, l, n) => `<button class="chip ${V.pf === k ? 'on' : ''}" data-act="pf" data-k="${k}">${l} (${n})</button>`;
+  return subtop(`Pending Approval (${P.all.length})`) + `<div class="chips">${chip('ALL', 'All', P.all.length)}${chip('VIDEOS', 'Videos', P.ind.length)}${chip('CHANNEL', 'Channel videos', P.ch.length)}${chip('SHORTS', 'Shorts', P.sh.length)}</div>
+  <div style="padding:0 12px"><button class="link" data-act="selall" ${shown.length ? '' : 'disabled'}>${shown.length && sel.length === shown.length ? 'Clear selection' : 'Select all'}</button></div>` +
+  (shown.length ? `<div class="list" style="gap:12px">${shown.map(c => `<div class="row"><input type="checkbox" data-act="tick" data-i="${c.id}" ${V.sel.has(c.id) ? 'checked' : ''} style="width:22px;height:22px">${rowThumb(c)}${rowInfo(c)}${sqBtns(c)}</div>`).join('')}</div>
+  <div style="position:sticky;bottom:0;background:var(--bg);padding:12px;display:flex;gap:10px"><button class="btn g" style="flex:1" data-act="approvesel" ${sel.length ? '' : 'disabled'}>Approve selected (${sel.length})</button><button class="btn b" style="flex:1" data-act="approveall">Approve all (${shown.length})</button></div>`
+    : empty('All caught up', 'Nothing is waiting for approval here.'));
+}
+function manageRow(c) {
+  const st = { APPROVED: ['Approved', 'var(--green)'], PENDING: ['Pending', 'var(--orange)'], REJECTED: ['Rejected', 'var(--accent)'] }[c.status];
+  const act = c.status === 'APPROVED' ? `<button class="link" data-act="revoke" data-i="${c.id}">Revoke</button>` : c.status === 'PENDING' ? `<button class="sq" style="background:var(--green)" data-act="approve" data-i="${c.id}" aria-label="Approve">✓</button>` : `<button class="link" data-act="revoke" data-i="${c.id}">Restore</button>`;
+  return `<div class="row">${rowThumb(c)}${rowInfo(c, `<div class="badge" style="color:${st[1]}">${st[0]}</div>`)}${act}${c.status !== 'REJECTED' ? `<button class="iconbtn" data-act="delitem" data-i="${c.id}" aria-label="Delete"><svg viewBox="0 0 24 24" style="stroke:var(--accent)">${ICON.trash.replace(/<\/?svg[^>]*>/g, '')}</svg></button>` : ''}</div>`;
+}
+function dChannels() {
+  return subtop('Channels') + (!S.channels.length ? empty('No channels yet', 'Use “Add Channel” on the dashboard to add one.') :
+    S.channels.map(ch => {
+      const vids = S.content.filter(c => c.origin === 'CHANNEL' && c.sourceChannelId === ch.channelId && c.status !== 'REJECTED');
+      const open = V.expanded === ch.channelId;
+      return `<div class="card2"><div class="row"><div class="avatar" style="width:48px;height:48px;overflow:hidden">${ch.thumbnailUrl ? `<img alt="" style="width:100%;height:100%;object-fit:cover" src="${esc(ch.thumbnailUrl)}">` : esc(ch.name[0].toUpperCase())}</div>
+        <div class="grow"><div style="font-weight:700;font-size:17px">${esc(ch.name)}</div><div class="sub">${vids.filter(c => c.status === 'APPROVED').length} approved · ${vids.filter(c => c.status === 'PENDING').length} pending</div></div>
+        ${V.refreshing.has(ch.channelId) ? '<div class="sub">Refreshing…</div>' : `<button class="iconbtn" data-act="refresh" data-c="${esc(ch.channelId)}" aria-label="Refresh">${ICON.refresh}</button>`}
+        <button class="iconbtn" data-act="delchan" data-c="${esc(ch.channelId)}" aria-label="Delete channel"><svg viewBox="0 0 24 24" style="stroke:var(--accent)">${ICON.trash.replace(/<\/?svg[^>]*>/g, '')}</svg></button></div>
+        <button class="link" style="text-align:left" data-act="expand" data-c="${esc(ch.channelId)}">${open ? 'Hide videos' : `View imported videos (${vids.length})`}</button>
+        ${open ? (vids.length ? vids.map(manageRow).join('') : '<div class="sub">No videos imported yet. Try Refresh.</div>') : ''}</div>`;
+    }).join(''));
+}
+function dVideos() {
+  const shown = S.content.filter(c => (V.ms === 'ALL' ? c.status !== 'REJECTED' : c.status === V.ms) && (V.mt === 'ALL' || c.kind === V.mt) && matches(c, V.mq)).sort((a, b) => b.dateAdded - a.dateAdded);
+  const chip = (cur, k, l, act) => `<button class="chip ${cur === k ? 'on' : ''}" data-act="${act}" data-k="${k}">${l}</button>`;
+  return subtop('Video Management') + `<div class="search"><input id="mq" type="search" placeholder="Search the catalogue" value="${esc(V.mq)}" autocomplete="off"></div>
+  <div class="chips">${chip(V.ms, 'ALL', 'All', 'ms')}${chip(V.ms, 'PENDING', 'Pending', 'ms')}${chip(V.ms, 'APPROVED', 'Approved', 'ms')}${chip(V.ms, 'REJECTED', 'Rejected', 'ms')}</div>
+  <div class="chips">${chip(V.mt, 'ALL', 'Videos + Shorts', 'mt')}${chip(V.mt, 'VIDEO', 'Videos', 'mt')}${chip(V.mt, 'SHORT', 'Shorts', 'mt')}</div>` +
+  (shown.length ? `<div class="list" style="gap:14px">${shown.map(manageRow).join('')}</div>` : empty('Nothing here', 'No items match these filters.'));
+}
+function dSettings() {
+  return subtop('App Settings') + `<div class="card2">
+    <button class="navrow" data-act="chpin"><span>Change PIN</span><em>›</em></button>
+    <button class="navrow" data-act="apikey"><span>YouTube API key ${S.apiKey ? '(set)' : '(not set)'}</span><em>›</em></button>
+    <button class="navrow" data-act="export"><span>Export backup</span><em>›</em></button>
+    <button class="navrow" data-act="import"><span>Import backup</span><em>›</em></button>
+    <button class="navrow" data-act="about"><span>About App</span><em>›</em></button></div>`;
+}
+
+// ---------- players (YouTube's own embedded IFrame player; ads/branding untouched) ----------
+let ytLoading = null, curPlayer = null, io = null;
+function loadYT() {
+  if (window.YT && YT.Player) return Promise.resolve();
+  if (ytLoading) return ytLoading;
+  ytLoading = new Promise((res, rej) => {
+    window.onYouTubeIframeAPIReady = res;
+    const s = document.createElement('script'); s.src = 'https://www.youtube.com/iframe_api';
+    s.onerror = () => { ytLoading = null; rej(new Error('load')); }; document.head.appendChild(s);
+  });
+  return ytLoading;
+}
+function destroyPlayer() { try { curPlayer && curPlayer.destroy && curPlayer.destroy(); } catch (e) {} curPlayer = null; }
+function closeOverlay() { destroyPlayer(); if (io) { io.disconnect(); io = null; } const o = $('#overlay'); o.classList.remove('show'); o.innerHTML = ''; }
+function openPlayer(c) {
+  const o = $('#overlay'); o.classList.add('show');
+  o.innerHTML = `<div class="bar"><button class="iconbtn" data-act="closeov" aria-label="Back">${ICON.back}</button><div class="rtitle" style="flex:1">${esc(c.title)}</div></div>
+    <div class="vwrap"><div id="ytslot"></div></div><div style="padding:16px;background:var(--bg);flex:1"><div style="font-size:18px;font-weight:700">${esc(c.title)}</div>${c.channelName ? `<div class="sub" style="margin-top:4px">${esc(c.channelName)}</div>` : ''}<div id="perr" class="status err"></div></div>`;
+  loadYT().then(() => { if (!$('#ytslot')) return;
+    curPlayer = new YT.Player('ytslot', { videoId: c.youtubeId, width: '100%', height: '100%', playerVars: { rel: 0, playsinline: 1, modestbranding: 1 },
+      events: { onStateChange: e => { if (e.data === 0) { try { curPlayer.cueVideoById(c.youtubeId); } catch (x) {} } }, // return to poster, no end-screen browsing
+        onError: () => { const p = $('#perr'); if (p) p.textContent = 'This video can’t be played right now. It may have been removed or blocked from embedding.'; } } });
+  }).catch(() => { const p = $('#perr'); if (p) p.textContent = 'Couldn’t reach YouTube. Check the internet connection.'; });
+}
+function openShorts(startId) {
+  const list = approvedShorts().filter(c => matches(c, V.q)); const start = Math.max(0, list.findIndex(c => c.id === startId));
+  const o = $('#overlay'); o.classList.add('show');
+  o.innerHTML = `<button class="iconbtn sback" data-act="closeov" aria-label="Back">${ICON.back}</button><div class="pager" id="pager">${list.map(c => `<section class="page" data-yt="${c.youtubeId}"><img alt="" src="${thumbUrl(c.youtubeId)}"><div class="slot"></div><div class="tap"></div><div class="cap">${esc(c.title)}</div></section>`).join('')}</div>`;
+  const pager = $('#pager'); pager.children[start].scrollIntoView();
+  io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting && e.intersectionRatio > 0.7) activate(e.target); }), { root: pager, threshold: [0.7] });
+  [...pager.children].forEach(p => io.observe(p));
+  pager.addEventListener('click', e => { const t = e.target.closest('.tap'); if (t && curPlayer && curPlayer.getPlayerState) { try { curPlayer.getPlayerState() === 1 ? curPlayer.pauseVideo() : curPlayer.playVideo(); } catch (x) {} } });
+  async function activate(page) {
+    destroyPlayer(); document.querySelectorAll('.page .slot').forEach(s => s.innerHTML = '');
+    const slot = page.querySelector('.slot'), div = document.createElement('div'); slot.appendChild(div);
+    try { await loadYT(); } catch (e) { toast('Couldn’t reach YouTube.'); return; }
+    if (!document.body.contains(div)) return;
+    const id = page.dataset.yt;
+    curPlayer = new YT.Player(div, { videoId: id, width: '100%', height: '100%', playerVars: { controls: 0, loop: 1, playlist: id, playsinline: 1, rel: 0, autoplay: 1, modestbranding: 1 },
+      events: { onReady: e => { try { e.target.playVideo(); } catch (x) {} } } });
+  }
+}
+
+// ---------- dialogs ----------
+function dlgAddLink(kind) {
+  const short = kind === 'SHORT';
+  modal(`<h2>${short ? 'Add Short' : 'Add Video'}</h2><input id="m-url" type="text" inputmode="url" autocomplete="off" placeholder="${short ? 'https://www.youtube.com/shorts/…' : 'https://www.youtube.com/watch?v=…'}">
+    <input id="m-title" type="text" placeholder="Type a title" style="display:none"><div id="mstatus" class="status"></div>
+    <div class="acts"><button class="btn" data-busy data-act="closemodal">Cancel</button><button class="btn b" data-busy data-act="submitadd" data-k="${kind}">Add</button></div>`);
+}
+async function submitAdd(kind) {
+  const url = $('#m-url').value, tEl = $('#m-title');
+  mbusy(true, 'Checking with YouTube…');
+  try {
+    const link = parseLink(url);
+    if (kind === 'VIDEO') {
+      if (link.t === 'short') throw new AppError('That’s a Short link. Use “Add Short” instead.');
+      if (['channel', 'handle', 'user', 'custom'].includes(link.t)) throw new AppError('That’s a channel link. Use “Add Channel” instead.');
+      if (link.t !== 'video') throw new AppError('That doesn’t look like a YouTube video link.');
+    } else {
+      if (link.t === 'video') throw new AppError('That’s a normal video link, not a Short. Use “Add Video” instead.');
+      if (['channel', 'handle', 'user', 'custom'].includes(link.t)) throw new AppError('That’s a channel link. Use “Add Channel” instead.');
+      if (link.t !== 'short') throw new AppError('That doesn’t look like a YouTube Shorts link (youtube.com/shorts/…).');
+    }
+    await addSingle(link.id, kind, tEl.style.display !== 'none' ? tEl.value.trim() : '');
+    closeModal(); toast(kind === 'SHORT' ? 'Short added to Pending Approval' : 'Added to Pending Approval'); render();
+  } catch (e) {
+    mbusy(false);
+    if (e instanceof NeedTitle) { tEl.style.display = 'block'; tEl.focus(); mstatus('Couldn’t fetch the title automatically. Type one, then tap Add again. (An API key in Settings avoids this.)', true); }
+    else mstatus(e instanceof AppError ? e.message : 'Something went wrong. Please try again.', true);
+  }
+}
+function dlgAddChannel(info, err) {
+  if (!info) return modal(`<h2>Add Channel</h2><input id="m-url" type="text" inputmode="url" autocomplete="off" placeholder="youtube.com/@handle or /channel/UC…"><div id="mstatus" class="status">${err ? esc(err) : ''}</div>
+    <div class="acts"><button class="btn" data-busy data-act="closemodal">Cancel</button><button class="btn b" data-busy data-act="findchan">Find</button></div>`);
+  window._found = info;
+  modal(`<h2>Is this the right channel?</h2><div class="row"><div class="avatar" style="width:56px;height:56px;overflow:hidden">${info.thumbnailUrl ? `<img alt="" style="width:100%;height:100%;object-fit:cover" src="${esc(info.thumbnailUrl)}">` : esc(info.name[0].toUpperCase())}</div>
+    <div><div style="font-weight:700;font-size:18px">${esc(info.name)}</div><div class="sub">${esc(info.handle || info.channelId)}</div></div></div>
+    <div class="note">Its latest videos will be imported as Pending Approval. Nothing is visible to your child until you approve it.</div><div id="mstatus" class="status err">${err ? esc(err) : ''}</div>
+    <div class="acts"><button class="btn" data-busy data-act="chanback">Back</button><button class="btn b" data-busy data-act="importchan">Import</button></div>`);
+}
+function confirmDlg(title, text, act, data) {
+  modal(`<h2>${esc(title)}</h2><div class="note" style="font-size:15px">${esc(text)}</div><div class="acts"><button class="btn" data-act="closemodal">Cancel</button><button class="btn r" data-act="${act}" ${Object.entries(data || {}).map(([k, v]) => `data-${k}="${esc(v)}"`).join(' ')}>Confirm</button></div>`);
+}
+function dlgChangePin() {
+  const f = (id, l) => `<input id="${id}" type="password" inputmode="numeric" maxlength="4" autocomplete="off" placeholder="${l}">`;
+  modal(`<h2>Change PIN</h2>${f('p-old', 'Current PIN')}${f('p-new', 'New PIN (4 digits)')}${f('p-rep', 'Repeat new PIN')}<div id="mstatus" class="status"></div>
+    <div class="acts"><button class="btn" data-busy data-act="closemodal">Cancel</button><button class="btn b" data-busy data-act="savepin">Change</button></div>`);
+}
+async function savePin() {
+  const o = $('#p-old').value, n = $('#p-new').value, r = $('#p-rep').value;
+  if (!/^\d{4}$/.test(n)) return mstatus('The new PIN must be exactly 4 digits.', true);
+  if (n !== r) return mstatus('The new PINs don’t match.', true);
+  mbusy(true, 'Checking…');
+  try {
+    const v = await verifyPin(o);
+    if (v.s === 'locked') return (mbusy(false), mstatus(`Too many attempts. Try again in ${v.secs}s.`, true));
+    if (v.s === 'wrong') return (mbusy(false), mstatus(`Current PIN is incorrect (${v.left} tries left).`, true));
+    S.pin = await makePin(n); save(); closeModal(); toast('PIN changed.');
+  } catch (e) { mbusy(false); mstatus(e.message, true); }
+}
+function dlgApiKey() {
+  modal(`<h2>YouTube API key</h2><div class="note">Needed for channels, @handle links, durations and automatic titles. It stays on this device only. Create a free YouTube Data API v3 key in Google Cloud and restrict it to this website address (see the guide).</div>
+    <input id="k-val" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Paste API key" value="${esc(S.apiKey)}"><div id="mstatus" class="status"></div>
+    <div class="acts"><button class="btn" data-act="closemodal">Cancel</button><button class="btn b" data-act="savekey">Save</button></div>`);
+}
+const DEFAULT_PIN = '2627'; // initial prototype PIN from the spec; stored only as a salted hash
+
+// ---------- actions ----------
+const A = {
+  tab(d) { if (V.tab === 'upload' && d.t !== 'upload') lock(); if (V.tab !== d.t) { V.searching = false; V.q = ''; } V.tab = d.t; render(); },
+  search() { V.searching = true; render(); setTimeout(() => { const q = $('#q'); q && q.focus(); }, 30); },
+  closesearch() { V.searching = false; V.q = ''; render(); },
+  chan(d) { S.selChannel = d.c || null; save(); render(); },
+  play(d) { const c = S.content.find(x => x.id === +d.i); if (c && c.status === 'APPROVED' && c.kind === 'VIDEO') openPlayer(c); },
+  short(d) { const c = S.content.find(x => x.id === +d.i); if (c && c.status === 'APPROVED' && c.kind === 'SHORT') openShorts(c.id); },
+  closeov() { closeOverlay(); },
+  closemodal() { closeModal(); },
+  async pin(d) {
+    if (d.k === '<') V.pin = V.pin.slice(0, -1); else if (V.pin.length < 4) { V.pin += d.k; V.pinMsg = ''; }
+    render();
+    if (V.pin.length === 4) {
+      const pin = V.pin; let r;
+      try { r = await verifyPin(pin); } catch (e) { V.pin = ''; V.pinMsg = e.message; return render(); }
+      V.pin = '';
+      if (r.s === 'ok') { V.unlocked = true; V.dash = 'home'; V.pinMsg = ''; }
+      else V.pinMsg = r.s === 'locked' ? `Too many attempts. Try again in ${r.secs}s.` : `Wrong PIN. ${r.left} ${r.left === 1 ? 'try' : 'tries'} left.`;
+      render();
+    }
+  },
+  lockdash() { lock(); render(); },
+  dback() { V.dash = 'home'; V.sel.clear(); render(); },
+  dgo(d) { V.dash = d.d; render(); },
+  addlink(d) { dlgAddLink(d.k); },
+  submitadd(d) { submitAdd(d.k); },
+  addchan() { dlgAddChannel(); },
+  async findchan() {
+    mbusy(true, 'Finding channel…');
+    try { const info = await resolveChannel(parseLink($('#m-url').value)); if (S.channels.some(c => c.channelId === info.channelId)) throw new AppError(`“${info.name}” is already added.`); dlgAddChannel(info); }
+    catch (e) { mbusy(false); mstatus(e instanceof AppError ? e.message : 'Something went wrong. Please try again.', true); }
+  },
+  chanback() { dlgAddChannel(); },
+  async importchan() {
+    mbusy(true, 'Importing videos…');
+    try { const n = await importChannel(window._found); closeModal(); toast(`Imported ${n} videos. Review them under Pending Approval.`); render(); }
+    catch (e) { mbusy(false); mstatus(e instanceof AppError ? e.message : 'Something went wrong. Please try again.', true); }
+  },
+  approve(d) { setStatus([+d.i], 'APPROVED'); V.sel.delete(+d.i); render(); },
+  reject(d) { removeItems([+d.i]); V.sel.delete(+d.i); render(); },
+  revoke(d) { setStatus([+d.i], 'PENDING'); render(); },
+  delitem(d) { const c = S.content.find(x => x.id === +d.i); confirmDlg('Delete this item?', c ? c.title : '', 'doDelItem', { i: d.i }); },
+  doDelItem(d) { removeItems([+d.i]); closeModal(); render(); },
+  pf(d) { V.pf = d.k; render(); },
+  tick(d, el) { el.checked ? V.sel.add(+d.i) : V.sel.delete(+d.i); render(); },
+  selall() { const P = pendingFiltered(); const shown = { ALL: P.all, VIDEOS: P.ind, CHANNEL: P.ch, SHORTS: P.sh }[V.pf]; const all = shown.every(c => V.sel.has(c.id)); shown.forEach(c => all ? V.sel.delete(c.id) : V.sel.add(c.id)); render(); },
+  approvesel() { const P = pendingFiltered(); const shown = { ALL: P.all, VIDEOS: P.ind, CHANNEL: P.ch, SHORTS: P.sh }[V.pf]; setStatus(shown.filter(c => V.sel.has(c.id)).map(c => c.id), 'APPROVED'); V.sel.clear(); render(); },
+  approveall() { const P = pendingFiltered(); const shown = { ALL: P.all, VIDEOS: P.ind, CHANNEL: P.ch, SHORTS: P.sh }[V.pf]; if (shown.length) confirmDlg(`Approve ${shown.length} items?`, 'They will immediately become visible to your child.', 'doApproveAll'); },
+  doApproveAll() { const P = pendingFiltered(); const shown = { ALL: P.all, VIDEOS: P.ind, CHANNEL: P.ch, SHORTS: P.sh }[V.pf]; setStatus(shown.map(c => c.id), 'APPROVED'); V.sel.clear(); closeModal(); render(); },
+  ms(d) { V.ms = d.k; render(); }, mt(d) { V.mt = d.k; render(); },
+  expand(d) { V.expanded = V.expanded === d.c ? null : d.c; render(); },
+  async refresh(d) {
+    V.refreshing.add(d.c); render();
+    try { const n = await refreshChannel(d.c); toast(n ? `${n} new videos found. They are pending approval.` : 'No new videos.'); }
+    catch (e) { toast(e instanceof AppError ? e.message : 'Something went wrong. Please try again.'); }
+    V.refreshing.delete(d.c); render();
+  },
+  delchan(d) { const c = S.channels.find(x => x.channelId === d.c); confirmDlg(`Delete “${c ? c.name : 'channel'}”?`, 'This removes the channel tab and all videos imported from it. Videos you added individually are kept.', 'doDelChan', { c: d.c }); },
+  doDelChan(d) { deleteChannel(d.c); closeModal(); render(); },
+  chpin() { dlgChangePin(); }, savepin() { savePin(); },
+  apikey() { dlgApiKey(); },
+  savekey() { S.apiKey = $('#k-val').value.trim(); save(); closeModal(); toast(S.apiKey ? 'API key saved.' : 'API key removed.'); render(); },
+  export() {
+    const blob = new Blob([exportJson()], { type: 'application/json' }), a = document.createElement('a');
+    a.href = URL.createObjectURL(blob); a.download = `kidsvideo-backup-${new Date().toISOString().slice(0, 10)}.json`;
+    document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 5000); toast('Backup downloaded.');
+  },
+  import() { $('#filepick').value = ''; $('#filepick').click(); },
+  about() { modal(`<h2>About Kids Video</h2><div class="note" style="font-size:15px">Version 0.1.0 (web app)<br><br>A private, parent-controlled video catalogue. Everything is stored in this browser on this device only. Videos play through YouTube’s own embedded player, so YouTube shows its own ads and branding; this app adds none and does not block any.<br><br>YouTube API key: ${S.apiKey ? 'set' : 'not set (limited mode)'}.<br>Clearing this browser’s site data erases the catalogue and PIN, so keep a backup.</div><div class="acts"><button class="btn b" data-act="closemodal">OK</button></div>`); },
+};
+document.addEventListener('click', e => {
+  const t = e.target.closest('[data-act]'); if (!t || t.tagName === 'INPUT' && t.type !== 'checkbox') return;
+  if (t.type === 'checkbox') return; // handled on change
+  const f = A[t.dataset.act]; if (f) f(t.dataset, t);
+});
+document.addEventListener('change', e => { const t = e.target; if (t.type === 'checkbox' && t.dataset.act === 'tick') A.tick(t.dataset, t); });
+document.addEventListener('input', e => {
+  if (e.target.id === 'q') { V.q = e.target.value; render(); }
+  if (e.target.id === 'mq') { V.mq = e.target.value; render(); }
+});
+$('#filepick').addEventListener('change', async e => {
+  const f = e.target.files[0]; if (!f) return;
+  try {
+    if (f.size > 10e6) throw new AppError('That file is too large to be a backup.');
+    const r = importJson(await f.text()); render();
+    toast(`Imported ${r.videos} videos, ${r.shorts} Shorts, ${r.channels} channels (${r.skipped} skipped). Everything imported is pending: please approve it again.`);
+  } catch (err) { toast(err instanceof AppError ? err.message : 'That backup file is damaged.'); }
+});
+// Leaving the app locks the parent dashboard.
+document.addEventListener('visibilitychange', () => { if (document.hidden && V.unlocked) { lock(); render(); } });
+
+// ---------- start ----------
+(async function init() {
+  try { if (!S.pin) { S.pin = await makePin(DEFAULT_PIN); save(); } }
+  catch (e) { V.pinMsg = e.message; }
+  render();
+  if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
+})();
+</script>
+</body>
+</html>
